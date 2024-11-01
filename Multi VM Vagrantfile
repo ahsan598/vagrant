@@ -1,54 +1,42 @@
 Vagrant.configure("2") do |config|
 
-  config.vm.define "web01" do |web01|
-    web01.vm.box = "ubuntu/jammy64"
-    web01.ssh.insert_key = false
-    web01.vm.network "private_network", ip: "192.168.*.*"
-    web01.vm.network "forwarded_port", guest: 80, host: 8080
-    web01.vm.hostname = "Jenkins"
-    web01.vm.provider "virtualbox" do |vb|
-      vb.memory = "2048"
-      vb.cpus = "2"
-    end
-    web01.vm.provider :virtualbox do |vb|
+  config.vm.define "jenkins" do |jenkins|
+    jenkins.vm.box = "ubuntu/jammy64"
+    jenkins.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+    jenkins.vm.network "forwarded_port", guest: 8071, host: 8071, host_ip: "127.0.0.1"
+    jenkins.vm.network "private_network", ip: "192.168.*.*"
+    jenkins.vm.hostname = "jenkins"
+    jenkins.vm.provider "virtualbox" do |vb|
+      vb.memory = "4096"
+      vb.cpus = "4"
       vb.name = "jenkins"
       vb.gui = true
-    end
+   end
   end
 
-
-
-  config.vm.define "web02" do |web02|
-    web02.vm.box = "ubuntu/jammy64"
-    web02.ssh.insert_key = false
-    web02.vm.network "private_network", ip: "192.168.*.*"
-    web02.vm.network "forwarded_port", guest: 9000, host: 9000
-    web02.vm.hostname = "Sonarqube"
-    web02.vm.provider "virtualbox" do |vb|
+  config.vm.define "sonar" do |sonar|
+    sonar.vm.box = "ubuntu/jammy64"
+    sonar.vm.network "forwarded_port", guest: 9000, host: 9000, host_ip: "127.0.0.1"
+    sonar.vm.network "private_network", ip: "192.168.*.*"
+    sonar.vm.hostname = "sonar"
+    sonar.vm.provider "virtualbox" do |vb|
       vb.memory = "4096"
-      vb.cpus = "2"
-    end
-    web02.vm.provider :virtualbox do |vb|
-      vb.name = "sonarqube"
+      vb.cpus = "4"
+      vb.name = "sonar"
       vb.gui = true
-    end
+   end
   end
-
-
-
-  config.vm.define "web03" do |web03|
-    web03.vm.box = "ubuntu/jammy64"
-    web03.ssh.insert_key = false
-    web03.vm.network "private_network", ip: "192.168.*.*"
-    web03.vm.network "forwarded_port", guest: 80, host: 8085
-    web03.vm.hostname = "Docker"
-    web03.vm.provider "virtualbox" do |vb|
-      vb.memory = "2048"
-      vb.cpus = "2"
-    end
-    web03.vm.provider :virtualbox do |vb|
-      vb.name = "docker"
+  
+  config.vm.define "nexus" do |nexus|
+    nexus.vm.box = "ubuntu/jammy64"
+    nexus.vm.network "forwarded_port", guest: 8081, host: 8081, host_ip: "127.0.0.1"
+    nexus.vm.network "private_network", ip: "192.168.*.*"
+    nexus.vm.hostname = "nexus"
+    nexus.vm.provider "virtualbox" do |vb|
+      vb.memory = "4096"
+      vb.cpus = "4"
+      vb.name = "nexus"
       vb.gui = true
-    end
+   end
   end
 end
